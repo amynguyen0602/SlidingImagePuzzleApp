@@ -24,8 +24,37 @@ public class MainActivity extends AppCompatActivity {
     private final int BLANK = R.drawable.blank;
     private final int NUMBER_OF_COLUMN = 4;
     private int moveSoFar = 0;
-    int[] randomImgList = new int[pics.length];
+    int[] randomImgList = shuffleImages(pics);
     private MyCustomGridViewAdapter adapter;
+    String notiTxt = "";
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        final TextView moveNum = findViewById(R.id.moveNumberTxtView);
+        final TextView noti = findViewById(R.id.notiTxtView);
+        outState.putIntArray("ImgList", randomImgList);
+        outState.putInt("numMove", moveSoFar);
+        outState.putString("noti", notiTxt);
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        final TextView moveNum = findViewById(R.id.moveNumberTxtView);
+        final TextView noti = findViewById(R.id.notiTxtView);
+        moveSoFar = savedInstanceState.getInt("numMove");
+        notiTxt = savedInstanceState.getString("noti");
+        if(moveSoFar > 0) {
+            moveNum.setText(String.valueOf(moveSoFar));
+        }
+        noti.setText(notiTxt);
+        randomImgList = savedInstanceState.getIntArray("ImgList");
+        adapter = new MyCustomGridViewAdapter(MainActivity.this, randomImgList);
+        GridView gridView = findViewById(R.id.puzzleGridView);
+        gridView.setAdapter(adapter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         Button newPuzzle = findViewById(R.id.newPuzzleBtn);
         final Button solvePuzzle = findViewById(R.id.solvePuzzleBtn);
 
-        randomImgList = shuffleImages(pics);
         adapter = new MyCustomGridViewAdapter(this, randomImgList);
 
         gridView.setNumColumns(NUMBER_OF_COLUMN);
@@ -71,18 +99,18 @@ public class MainActivity extends AppCompatActivity {
                     moveNum.setText(String.valueOf(moveSoFar));
                     noti.setText(null);
                 } else {
-                    noti.setText("Illegal move!");
+                    notiTxt = "Illegal move!";
                 }
 
                 if (checkWin(randomImgList)) {
                     if(moveSoFar > 0) {
-                        noti.setText("You solved the puzzle in " + moveSoFar + " moves!");
+                        notiTxt = "You solved the puzzle in " + moveSoFar + " moves!";
                         moveSoFar = 0;
                         solvePuzzle.setEnabled(false);
                     }
 
                 }
-
+                noti.setText(notiTxt);
             }
         });
 
