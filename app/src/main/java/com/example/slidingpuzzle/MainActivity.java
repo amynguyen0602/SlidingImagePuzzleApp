@@ -27,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     int[] randomImgList = shuffleImages(pics);
     private MyCustomGridViewAdapter adapter;
     String notiTxt = "";
+    boolean isNewPuzzleEnable = true;
+    boolean isSolvePuzzleEnable = true;
 
 
     @Override
@@ -37,13 +39,21 @@ public class MainActivity extends AppCompatActivity {
         outState.putIntArray("ImgList", randomImgList);
         outState.putInt("numMove", moveSoFar);
         outState.putString("noti", notiTxt);
+        outState.putBoolean("newPuzzle", isNewPuzzleEnable);
+        outState.putBoolean("solvePuzzle", isSolvePuzzleEnable);
 
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        final TextView moveNum = findViewById(R.id.moveNumberTxtView);
-        final TextView noti = findViewById(R.id.notiTxtView);
+        TextView moveNum = findViewById(R.id.moveNumberTxtView);
+        TextView noti = findViewById(R.id.notiTxtView);
+        Button newPuzzle = findViewById(R.id.newPuzzleBtn);
+        Button solvePuzzle = findViewById(R.id.solvePuzzleBtn);
+        isNewPuzzleEnable = savedInstanceState.getBoolean("newPuzzle");
+        isSolvePuzzleEnable = savedInstanceState.getBoolean("solvePuzzle");
+        newPuzzle.setEnabled(isNewPuzzleEnable);
+        solvePuzzle.setEnabled(isSolvePuzzleEnable);
         moveSoFar = savedInstanceState.getInt("numMove");
         notiTxt = savedInstanceState.getString("noti");
         if (moveSoFar > 0) {
@@ -64,17 +74,13 @@ public class MainActivity extends AppCompatActivity {
         final GridView gridView = findViewById(R.id.puzzleGridView);
         final TextView moveNum = findViewById(R.id.moveNumberTxtView);
         final TextView noti = findViewById(R.id.notiTxtView);
-        Button newPuzzle = findViewById(R.id.newPuzzleBtn);
+        final Button newPuzzle = findViewById(R.id.newPuzzleBtn);
         final Button solvePuzzle = findViewById(R.id.solvePuzzleBtn);
 
         adapter = new MyCustomGridViewAdapter(this, randomImgList);
 
         gridView.setNumColumns(NUMBER_OF_COLUMN);
         gridView.setAdapter(adapter);
-        if (!checkWin(randomImgList)) {
-
-
-        }
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -110,11 +116,14 @@ public class MainActivity extends AppCompatActivity {
                     notiTxt = "Please select a new puzzle to restart!";
                 }
 
+
                 if (checkWin(randomImgList)) {
                     if (moveSoFar > 0) {
                         notiTxt = "You solved the puzzle in " + moveSoFar + " moves!";
-                        moveSoFar = 0;
-                        solvePuzzle.setEnabled(false);
+                        isSolvePuzzleEnable = false;
+                        isNewPuzzleEnable = true;
+                        solvePuzzle.setEnabled(isSolvePuzzleEnable);
+                        newPuzzle.setEnabled(isNewPuzzleEnable);
                     }
 
                 }
@@ -125,6 +134,10 @@ public class MainActivity extends AppCompatActivity {
         newPuzzle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isNewPuzzleEnable = false;
+                isSolvePuzzleEnable = true;
+                solvePuzzle.setEnabled(isSolvePuzzleEnable);
+                newPuzzle.setEnabled(isNewPuzzleEnable);
                 solvePuzzle.setEnabled(true);
                 randomImgList = shuffleImages(randomImgList);
                 adapter = new MyCustomGridViewAdapter(MainActivity.this, randomImgList);
@@ -137,14 +150,16 @@ public class MainActivity extends AppCompatActivity {
         solvePuzzle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isNewPuzzleEnable = true;
+                isSolvePuzzleEnable = false;
                 randomImgList = Arrays.copyOf(pics, pics.length);
                 adapter = new MyCustomGridViewAdapter(MainActivity.this, randomImgList);
                 gridView.setAdapter(adapter);
                 moveSoFar = 0;
                 moveNum.setText(null);
                 noti.setText(null);
-                solvePuzzle.setEnabled(false);
-
+                solvePuzzle.setEnabled(isSolvePuzzleEnable);
+                newPuzzle.setEnabled(isNewPuzzleEnable);
             }
         });
 
