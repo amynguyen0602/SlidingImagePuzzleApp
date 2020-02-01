@@ -17,9 +17,9 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     private int[] pics = {R.drawable.img1, R.drawable.img2, R.drawable.img3, R.drawable.img4,
-        R.drawable.img5, R.drawable.img6, R.drawable.img7, R.drawable.img8, R.drawable.img9,
-        R.drawable.img10, R.drawable.img11, R.drawable.img12, R.drawable.img13, R.drawable.img14,
-        R.drawable.img15, R.drawable.blank};
+            R.drawable.img5, R.drawable.img6, R.drawable.img7, R.drawable.img8, R.drawable.img9,
+            R.drawable.img10, R.drawable.img11, R.drawable.img12, R.drawable.img13, R.drawable.img14,
+            R.drawable.img15, R.drawable.blank};
 
     private final int BLANK = R.drawable.blank;
     private final int NUMBER_OF_COLUMN = 4;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         final TextView noti = findViewById(R.id.notiTxtView);
         moveSoFar = savedInstanceState.getInt("numMove");
         notiTxt = savedInstanceState.getString("noti");
-        if(moveSoFar > 0) {
+        if (moveSoFar > 0) {
             moveNum.setText(String.valueOf(moveSoFar));
         }
         noti.setText(notiTxt);
@@ -71,39 +71,47 @@ public class MainActivity extends AppCompatActivity {
 
         gridView.setNumColumns(NUMBER_OF_COLUMN);
         gridView.setAdapter(adapter);
+        if (!checkWin(randomImgList)) {
+
+
+        }
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if((position + 1 < randomImgList.length) && randomImgList[position + 1] == BLANK) {
-                    swap(randomImgList, position, position + 1);
-                    adapter.notifyDataSetChanged();
-                    moveSoFar++;
-                    moveNum.setText(String.valueOf(moveSoFar));
-                    notiTxt = "";
-                } else if ((position - 1 >= 0) && randomImgList[position - 1] == BLANK) {
-                    swap(randomImgList, position, position - 1);
-                    adapter.notifyDataSetChanged();
-                    moveSoFar++;
-                    moveNum.setText(String.valueOf(moveSoFar));
-                    notiTxt = "";
-                } else if ((position + NUMBER_OF_COLUMN < randomImgList.length) && randomImgList[position + NUMBER_OF_COLUMN] == BLANK) {
-                    swap(randomImgList, position, position + NUMBER_OF_COLUMN);
-                    adapter.notifyDataSetChanged();
-                    moveSoFar++;
-                    moveNum.setText(String.valueOf(moveSoFar));
-                    notiTxt = "";
-                } else if ((position - NUMBER_OF_COLUMN >= 0) && randomImgList[position - NUMBER_OF_COLUMN] == BLANK) {
-                    swap(randomImgList, position, position - NUMBER_OF_COLUMN);
-                    adapter.notifyDataSetChanged();
-                    moveSoFar++;
-                    moveNum.setText(String.valueOf(moveSoFar));
-                    notiTxt = "";
+                if (!checkWin(randomImgList)) {
+                    if ((position + 1 < randomImgList.length) && randomImgList[position + 1] == BLANK) {
+                        swap(randomImgList, position, position + 1);
+                        adapter.notifyDataSetChanged();
+                        moveSoFar++;
+                        moveNum.setText(String.valueOf(moveSoFar));
+                        notiTxt = "";
+                    } else if ((position - 1 >= 0) && randomImgList[position - 1] == BLANK) {
+                        swap(randomImgList, position, position - 1);
+                        adapter.notifyDataSetChanged();
+                        moveSoFar++;
+                        moveNum.setText(String.valueOf(moveSoFar));
+                        notiTxt = "";
+                    } else if ((position + NUMBER_OF_COLUMN < randomImgList.length) && randomImgList[position + NUMBER_OF_COLUMN] == BLANK) {
+                        swap(randomImgList, position, position + NUMBER_OF_COLUMN);
+                        adapter.notifyDataSetChanged();
+                        moveSoFar++;
+                        moveNum.setText(String.valueOf(moveSoFar));
+                        notiTxt = "";
+                    } else if ((position - NUMBER_OF_COLUMN >= 0) && randomImgList[position - NUMBER_OF_COLUMN] == BLANK) {
+                        swap(randomImgList, position, position - NUMBER_OF_COLUMN);
+                        adapter.notifyDataSetChanged();
+                        moveSoFar++;
+                        moveNum.setText(String.valueOf(moveSoFar));
+                        notiTxt = "";
+                    } else {
+                        notiTxt = "Illegal move!";
+                    }
                 } else {
-                    notiTxt = "Illegal move!";
+                    notiTxt = "Please select a new puzzle to restart!";
                 }
 
                 if (checkWin(randomImgList)) {
-                    if(moveSoFar > 0) {
+                    if (moveSoFar > 0) {
                         notiTxt = "You solved the puzzle in " + moveSoFar + " moves!";
                         moveSoFar = 0;
                         solvePuzzle.setEnabled(false);
@@ -148,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
         int index = 0;
         int temp;
         Random random = new Random();
-        for(int i = shuffleImg.length - 1; i > 0; i--) {
-            index = random.nextInt(i+1);
+        for (int i = shuffleImg.length - 1; i > 0; i--) {
+            index = random.nextInt(i + 1);
             temp = shuffleImg[index];
             shuffleImg[index] = shuffleImg[i];
             shuffleImg[i] = temp;
@@ -166,13 +174,13 @@ public class MainActivity extends AppCompatActivity {
 
     public boolean checkWin(int[] imgList) {
         boolean isSolved = false;
-        for(int i = 0; i < imgList.length; i++) {
-            if(imgList[i] == pics[i]) {
+        for (int i = 0; i < imgList.length; i++) {
+            if (imgList[i] == pics[i]) {
                 isSolved = true;
-            } else
-            {
+            } else {
                 isSolved = false;
-                break;}
+                break;
+            }
         }
         return isSolved;
 
