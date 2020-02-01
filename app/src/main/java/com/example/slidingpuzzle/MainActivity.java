@@ -79,25 +79,25 @@ public class MainActivity extends AppCompatActivity {
                     adapter.notifyDataSetChanged();
                     moveSoFar++;
                     moveNum.setText(String.valueOf(moveSoFar));
-                    noti.setText(null);
+                    notiTxt = "";
                 } else if ((position - 1 >= 0) && randomImgList[position - 1] == BLANK) {
                     swap(randomImgList, position, position - 1);
                     adapter.notifyDataSetChanged();
                     moveSoFar++;
                     moveNum.setText(String.valueOf(moveSoFar));
-                    noti.setText(null);
+                    notiTxt = "";
                 } else if ((position + NUMBER_OF_COLUMN < randomImgList.length) && randomImgList[position + NUMBER_OF_COLUMN] == BLANK) {
                     swap(randomImgList, position, position + NUMBER_OF_COLUMN);
                     adapter.notifyDataSetChanged();
                     moveSoFar++;
                     moveNum.setText(String.valueOf(moveSoFar));
-                    noti.setText(null);
+                    notiTxt = "";
                 } else if ((position - NUMBER_OF_COLUMN >= 0) && randomImgList[position - NUMBER_OF_COLUMN] == BLANK) {
                     swap(randomImgList, position, position - NUMBER_OF_COLUMN);
                     adapter.notifyDataSetChanged();
                     moveSoFar++;
                     moveNum.setText(String.valueOf(moveSoFar));
-                    noti.setText(null);
+                    notiTxt = "";
                 } else {
                     notiTxt = "Illegal move!";
                 }
